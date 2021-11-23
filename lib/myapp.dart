@@ -37,10 +37,9 @@ class _MyAppState extends State<MyApp> {
           future: fetchUserData,
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             print(snapshot.hasData);
-            List<User> userList = snapshot.data;
+            var userList = snapshot.data;
               if(snapshot.hasData){
-
-               return ListView.builder(
+                return ListView.builder(
                     itemCount: userList.length,
                     itemBuilder: (context, index) {
                     var user = userList[index];
@@ -93,11 +92,13 @@ class _MyAppState extends State<MyApp> {
 }
 
 Future<List<User>> fetchData() async {
-  List<User> userlist =[];
+
   final response =
       await http.get(Uri.parse('https://jsonplaceholder.typicode.com/users'));
-  if (response.statusCode == 200) {
+    if (response.statusCode == 200) {
+
     List<dynamic> data= jsonDecode(response.body);
+    print(data.toString());
     List<User> users = data.map((e) => User.fromJson(e)).toList();
     print('list of users :' +users.toString());
     return users;
