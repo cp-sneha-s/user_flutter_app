@@ -7,7 +7,7 @@ class User{
   factory User.fromJson(Map<String,dynamic> map){
     return User(
       name: map['name'],
-      city:map['username'],
+      city:map['address']['city'],
       email:map['email'],
     );
   }
