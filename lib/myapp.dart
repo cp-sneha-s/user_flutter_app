@@ -22,7 +22,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     setState(() {
-      fetchUserData = fetchData();
+      fetchUserData = fetchData(http.Client());
     });
   }
 
@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
                   onRefresh: () {
                     setState(() {
                       Future.delayed(Duration(seconds: 4));
-                      fetchUserData = fetchData();
+                      fetchUserData = fetchData(http.Client());
                       controller.refreshCompleted();
                     });
                   },
@@ -130,9 +130,9 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-Future<List<User>> fetchData() async {
+Future<List<User>> fetchData(http.Client client) async {
   final response =
-      await http.get(Uri.parse('https://jsonplaceholder.typicode.com/users'));
+      await client.get(Uri.parse('https://jsonplaceholder.typicode.com/users'));
   if (response.statusCode == 200) {
     List<dynamic> data = jsonDecode(response.body);
     print(data.toString());
