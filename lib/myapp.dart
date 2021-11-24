@@ -30,97 +30,103 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'flutter user app',
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('User list'),
-          backgroundColor: Colors.blueGrey,
-        ),
-        body: FutureBuilder<List<User>>(
-            future: fetchUserData,
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              print(snapshot.hasData);
-              if (snapshot.hasData) {
-                var list = snapshot.data;
-                userList = list;
+      home: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('User list'),
+            backgroundColor: Colors.blueGrey,
+          ),
+          body: FutureBuilder<List<User>>(
+              future: fetchUserData,
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                print(snapshot.hasData);
+                if (snapshot.hasData) {
+                  var list = snapshot.data;
+                  userList = list;
 //Pull to refresh functionality by RefreshIndicator:
-                // RefreshIndicator(
-                //   onRefresh: ()async {
-                //     setState(() {
-                //      fetchUserData= fetchData();
-                //     });
-                //     },
-                return SmartRefresher(
-                  controller: controller,
-                  onRefresh: () {
-                    setState(() {
-                      Future.delayed(Duration(seconds: 4));
-                      fetchUserData = fetchData();
-                      controller.refreshCompleted();
-                    });
-                  },
-                  child: ListView.builder(
-                      itemCount: userList.length,
-                      itemBuilder: (context, index) {
-                        var user = userList[index];
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                          child: Material(
-                            color: Colors.blueGrey,
-                            child: InkWell(
-                              splashColor: Colors.white,
-                              onLongPress: () {
-                                setState(() {
-                                  userList.removeAt(index);
-                                });
+                  // RefreshIndicator(
+                  //   onRefresh: ()async {
+                  //     setState(() {
+                  //      fetchUserData= fetchData();
+                  //     });
+                  //     },
+                  return SmartRefresher(
+                    controller: controller,
+                    onRefresh: () {
+                      setState(() {
+                        Future.delayed(Duration(seconds: 4));
+                        fetchUserData = fetchData();
+                        controller.refreshCompleted();
+                      });
+                    },
+                    child: ListView.builder(
+                        itemCount: userList.length,
+                        itemBuilder: (context, index) {
+                          var user = userList[index];
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                            child: Material(
+                              color: Colors.blueGrey,
+                              child: InkWell(
+                                splashColor: Colors.white,
+                                onLongPress: () {
+                                  setState(() {
+                                    userList.removeAt(index);
+                                  });
+                                  const snackbar = SnackBar(
+                                      elevation: 5.0,
+                                      content: Text('User data deleted!!'));
+                                  Scaffold.of(context).showSnackBar(snackbar);
 
-                                print('user longpressed');
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(10),
-                                height: 100,
-                                decoration: const BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Text(
-                                        'Name:' + user.name,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 15,
-                                            color: Colors.white),
-                                      ),
-                                      Text(
-                                        'City:' + user.city,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 15,
-                                            color: Colors.white),
-                                      ),
-                                      Text(
-                                        'Email:' + user.email,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 15,
-                                            color: Colors.white),
-                                      ),
-                                    ]),
+                                  print('longPressed called!');
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  height: 100,
+                                  decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Text(
+                                          'Name:' + user.name,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                              color: Colors.white),
+                                        ),
+                                        Text(
+                                          'City:' + user.city,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                              color: Colors.white),
+                                        ),
+                                        Text(
+                                          'Email:' + user.email,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                              color: Colors.white),
+                                        ),
+                                      ]),
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      }),
-                );
-              } else if (snapshot.hasError) {
-                print(snapshot.hasError);
-                return Text('${snapshot.error} ');
-              }
-              return const Center(child: CircularProgressIndicator());
-            }),
+                          );
+                        }),
+                  );
+                } else if (snapshot.hasError) {
+                  print(snapshot.hasError);
+                  return Text('${snapshot.error} ');
+                }
+                return const Center(child: CircularProgressIndicator());
+              }),
+        ),
       ),
     );
   }
