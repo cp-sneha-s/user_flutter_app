@@ -72,6 +72,10 @@ class _MyAppState extends State<MyApp> {
                                 setState(() {
                                   userList.removeAt(index);
                                 });
+                                const snackbar = SnackBar(
+                                    elevation: 5.0,
+                                    content: Text('User data deleted!!'));
+                                Scaffold.of(context).showSnackBar(snackbar);
 
                                 print('user longpressed');
                               },
